@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.18)
 
 #Project info
 project(
-    light_sampler
-    DESCRIPTION "assignment 3"
+    findTheDot
+    DESCRIPTION "assignment 4"
     LANGUAGES C
 )
 
@@ -14,3 +14,4 @@ add_compile_options(-Wall -Werror -Wpedantic -Wextra)
 
 add_subdirectory(hal)
 add_subdirectory(app)
+add_subdirectory(pru-as4)

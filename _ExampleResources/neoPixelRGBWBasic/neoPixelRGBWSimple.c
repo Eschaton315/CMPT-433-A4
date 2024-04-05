@@ -29,6 +29,7 @@
 
 #include <stdint.h>
 #include <pru_cfg.h>
+#include <stdbool.h>
 #include "resource_table_empty.h"
 
 #define STR_LEN         8       // # LEDs in our string
@@ -48,6 +49,8 @@ void main(void)
 {
     // Clear SYSCFG[STANDBY_INIT] to enable OCP master port
     CT_CFG.SYSCFG_bit.STANDBY_INIT = 0;
+
+    bool alter = false;
 
     // COLOURS
     // - 1st element in array is 1st (bottom) on LED strip; last element is last on strip (top)
@@ -75,6 +78,7 @@ void main(void)
         //  0xffffffff, // White w/ Bright White
     };    
 
+    while(true){
     __delay_cycles(resetCycles);
 
     for(int j = 0; j < STR_LEN; j++) {
@@ -91,6 +95,27 @@ void main(void)
                 __delay_cycles(zeroCyclesOff-2);
             }
         }
+    }
+    if(alter){
+
+        for(int i = 0; i < STR_LEN; i++){
+            color[i] = 0x00000f00;
+        }  
+
+        alter = false;
+    }else{
+        alter = true;
+        for(int i = 0; i < STR_LEN; i++){
+            if(i%2==0){
+                color[i] = 0x00000000;
+            }else{
+             color[i] = 0x000f0000;
+            }
+            
+        }  
+        
+    }
+    __delay_cycles(50000000);
     }
 
     // Send Reset
