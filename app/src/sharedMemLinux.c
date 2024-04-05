@@ -36,38 +36,136 @@ void freePruMmapAddr(volatile void* pPruBase)
 }
 
 static void pruApp(){
-    bool alter = true;
+    bool newDotGenerated = false;
+    bool joystickHold = false;
+    int alter = 0;
+
     while(!pSharedPru0->terminate){
-        printf("fire = %d\n",pSharedPru0->joystickDownPressed);
+
+        if(!newDotGenerated){
+           //set new Dot
+           newDotGenerated = true;
+        }
+        
+       
 
         if(pSharedPru0->joystickDownPressed){
-            for(int i = 0; i < STR_LEN; i++){
-                pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
-            } 
-        //implement adding new dot
-
+            if(!joystickHold){
+                joystickHold = true;
+                printf("FIRE!\n");
+            //implement hit effect or effect
+                for(int i = 0; i < STR_LEN; i++){
+                    pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
+                }
+            }
+ 
+        //if hit
+        newDotGenerated = false;
+    
         }else{
-            //swap color every half seconds temp program
-            if(alter){
-                for(int i = 0; i < STR_LEN; i++){
-                    pSharedPru0->neopixelColor[i] = 0x00000f00; //blue
-                }  
-            alter = false;
-            }else{
-                alter = true;
-                for(int i = 0; i < STR_LEN; i++){
-                    if(i%2==0){
-                        pSharedPru0->neopixelColor[i] = 0x0f000000;//green?
-                    }else{
-                        pSharedPru0->neopixelColor[i] = 0x000f0000; //red
-                    }
-                
-                }  
+            joystickHold = false;
+            //temp program to check that the neopixel works
+
+            switch (alter)
+            {
+            case 0:
+                pSharedPru0->neopixelColor[7] = 0x00000f00;
+                for(int i = 0; i < 7; i++){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }
+                alter ++;                 
+                break;
+            
+            case 1:
+                pSharedPru0->neopixelColor[7] = 0x000f0000;
+                pSharedPru0->neopixelColor[6] = 0x00000f00;
+                for(int i = 0; i < 6; i++){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }
+                alter ++; 
+                break;
+            case 2:
+                pSharedPru0->neopixelColor[7] = 0x00000f00;
+                pSharedPru0->neopixelColor[6] = 0x000f0000;
+                pSharedPru0->neopixelColor[5] = 0x00000f00;
+                for(int i = 0; i < 5; i++){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }
+                alter ++; 
+                break;
+            case 3:
+                pSharedPru0->neopixelColor[7] = 0x00000000;
+                pSharedPru0->neopixelColor[6] = 0x00000f00;
+                pSharedPru0->neopixelColor[5] = 0x000f0000;
+                pSharedPru0->neopixelColor[4] = 0x00000f00;
+                for(int i = 0; i < 4; i++){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }
+                alter ++;
+                break;
+            case 4:
+                for(int i = 7; i > 5; i--){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }            
+                pSharedPru0->neopixelColor[5] = 0x00000f00;
+                pSharedPru0->neopixelColor[4] = 0x000f0000;
+                pSharedPru0->neopixelColor[3] = 0x00000f00;
+                for(int i = 0; i < 3; i++){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }
+                alter ++; 
+                break;
+            case 5:
+                for(int i = 7; i > 4; i--){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }            
+                pSharedPru0->neopixelColor[4] = 0x00000f00;
+                pSharedPru0->neopixelColor[3] = 0x000f0000;
+                pSharedPru0->neopixelColor[2] = 0x00000f00;
+                for(int i = 0; i < 2; i++){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }
+                alter ++; 
+                break;
+            case 6:
+                for(int i = 7; i > 3; i--){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }            
+                pSharedPru0->neopixelColor[3] = 0x00000f00;
+                pSharedPru0->neopixelColor[2] = 0x000f0000;
+                pSharedPru0->neopixelColor[1] = 0x00000f00;
+                pSharedPru0->neopixelColor[0] = 0x00000000;
+                alter ++;   
+                break;
+            case 7:
+                for(int i = 7; i > 2; i--){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }            
+                pSharedPru0->neopixelColor[2] = 0x00000f00;
+                pSharedPru0->neopixelColor[1] = 0x000f0000;
+                pSharedPru0->neopixelColor[0] = 0x00000f00;
+                alter ++; 
+                break;
+            case 8:
+                for(int i = 7; i > 1; i--){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }            
+                pSharedPru0->neopixelColor[1] = 0x00000f00;
+                pSharedPru0->neopixelColor[0] = 0x000f0000;
+                alter ++; 
+                break;
+            case 9:
+                for(int i = 7; i > 0; i--){
+                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                }            
+                pSharedPru0->neopixelColor[0] = 0x00000f00;
+                alter = 0;
+                break;            
             
             }
         }
         pSharedPru0->colorReady=true;
-        sleepForMs(500);
+        sleepForMs(200);
     }
 
 
