@@ -41,10 +41,7 @@ static double yPrev = -999999;
 static double z = -999999;
 static double zPrev = -999999;
 static int regVal;
-static bool statusPlayHiHat = false;
-static bool statusPlaySnare = false;
-static bool statusPlayBase = false;
-static bool statusHold;
+
 static bool EndListen = false;
 
 
@@ -85,7 +82,6 @@ static void *accListener(){
 		val2 = regVal;
 		z = formatRawData(val1, val2);
 		
-		playSounds();
 		setPrevXYZ();
 		
 	}
@@ -100,48 +96,6 @@ void setPrevXYZ(){
 	
 }
 
-//Play sounds from the accelerometer based on movement
-void playSounds(){
-	if(fabs(x - xPrev) > 7000){
-		//play hi-hat
-		statusPlayHiHat = true;
-		
-	}
-	
-	if(fabs(y - yPrev) > 7000){
-		//play snare
-		statusPlaySnare = true;
-		
-	}
-	
-	if(fabs(z - zPrev) > 13000){
-		//play base
-		statusPlayBase = true;
-		
-	}
-	
-}
-
-bool playHiHat(){
-	statusHold = statusPlayHiHat;
-	statusPlayHiHat = false;
-	return statusHold;
-	
-}
-
-bool playSnare(){
-	statusHold = statusPlayHiHat;
-	statusPlaySnare = false;
-	return statusHold;
-	
-}
-
-bool playBase(){
-	statusHold = statusPlayHiHat;
-	statusPlayBase = false;
-	return statusHold;
-	
-}
 
 //format the data from the 2 registers to the raw data number
 double formatRawData( int data0, int data1) { 

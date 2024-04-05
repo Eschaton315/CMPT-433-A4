@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <alsa/asoundlib.h>
 
-#include "periodTimer.h"
 #include "hal/wavePlayer.h"
 
 #include "hal/sharedUtil.h"
@@ -265,10 +264,10 @@ void* playBeat(){
     
         while(playerActive){
            // printf("creating buffer\n");
-            Period_markEvent(PERIOD_EVENT_BUFFER);
+            
             minTime = getTimeInMs()-baseTime; 
             createBuffer();
-            Period_markEvent(PERIOD_EVENT_BUFFER);
+          
             maxTime = getTimeInMs()-baseTime; 
             wavedata_t bufferSample = {.pData = playbackBuffer,.numSamples = playbackBufferSize};
             Audio_setVolume(&bufferSample,volume);

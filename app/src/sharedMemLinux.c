@@ -90,8 +90,6 @@ void sharedMem_init(){
 
     //cleanup
     printf("Terminating\n");
-
-    sleepForMs(1000);
     freePruMmapAddr(pPruBase);
     return;
 }
