@@ -10,6 +10,8 @@ project(
 
 #Compiler options
 set(CMAKE_C_STANDARD 11)
+
+
 add_compile_options(-Wall -Werror -Wpedantic -Wextra)
 
 add_subdirectory(hal)

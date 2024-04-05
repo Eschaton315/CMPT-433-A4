@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "ranges": "c",
+        "sharedMemory.h": "c"
+    }
+}

@@ -4,6 +4,7 @@ add_custom_target(
     my_custom_target_that_always_runs ALL
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/__this_file_never_exists__.h
 )
+include_directories(include)
 
 # Copy the PRU code folder to NFS
 add_custom_command(

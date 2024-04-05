@@ -5,11 +5,10 @@
 #include <unistd.h>
 #include <alsa/asoundlib.h>
 
-#include "timer.h"
 #include "periodTimer.h"
 #include "hal/wavePlayer.h"
 #include "hal/joyStick.h" 
-#include "timer.h"
+#include "hal/sharedUtil.h"
 
 #define BASS "wave-files/100051__menegass__gui-drum-bd-hard.wav"
 #define SNARE "wave-files/100059__menegass__gui-drum-snare-soft.wav"

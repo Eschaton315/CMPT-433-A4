@@ -3,20 +3,18 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-#include "audioMixer.h"
-#include "hal/joyStick.h"
-#include "hal/wavePlayer.h"
-#include "hal/acc.h"
+#include "sharedMemLinux.h"
 
-#include "timer.h" 
-
-#include "periodTimer.h"
-
-
-
-
+/*
+ Zen Cape's LEDS header:
+                Pin 1: DIN (Data): left most pin; beside USB-micro connection, connects to P8.11
+                Pin 2: GND (Ground): middle pin
+                Pin 3: Unused (it's "5V external power", which is not powered normally on the BBG)
+        - Connect NeoPixel "5VDC" to P9.7 or P9.8
+*/
 int main(){
 
+    sharedMem_init();
     
     return 0;
 }
