@@ -35,8 +35,46 @@ void freePruMmapAddr(volatile void* pPruBase)
     }
 }
 
-void sharedMem_init(){
+static void pruApp(){
     bool alter = true;
+    while(!pSharedPru0->terminate){
+        printf("fire = %d\n",pSharedPru0->joystickDownPressed);
+
+        if(pSharedPru0->joystickDownPressed){
+            for(int i = 0; i < STR_LEN; i++){
+                pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
+            } 
+        //implement adding new dot
+
+        }else{
+            //swap color every half seconds temp program
+            if(alter){
+                for(int i = 0; i < STR_LEN; i++){
+                    pSharedPru0->neopixelColor[i] = 0x00000f00; //blue
+                }  
+            alter = false;
+            }else{
+                alter = true;
+                for(int i = 0; i < STR_LEN; i++){
+                    if(i%2==0){
+                        pSharedPru0->neopixelColor[i] = 0x0f000000;//green?
+                    }else{
+                        pSharedPru0->neopixelColor[i] = 0x000f0000; //red
+                    }
+                
+                }  
+            
+            }
+        }
+        pSharedPru0->colorReady=true;
+        sleepForMs(500);
+    }
+
+
+}
+
+void sharedMem_init(){
+    
     printf("Sharing memory with PRU\n");
     volatile void *pPruBase = getPruMmapAddr();
     pSharedPru0 = PRU0_MEM_FROM_BASE(pPruBase);
@@ -47,41 +85,8 @@ void sharedMem_init(){
     runCommand("config-pin P8.11 pruout");
     runCommand("config-pin p8_15 pruin");
     runCommand("config-pin p8.16 pruin");
-    printf("Terminate = %d\n",pSharedPru0->terminate);
-   
-    while(!pSharedPru0->terminate){
-         printf("fire = %d\n",pSharedPru0->joystickDownPressed);
 
-         if(pSharedPru0->joystickDownPressed){
-            for(int i = 0; i < STR_LEN; i++){
-            pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
-        } 
-
-         }else{
-        //do stuff
-        if(alter){
-
-        for(int i = 0; i < STR_LEN; i++){
-            pSharedPru0->neopixelColor[i] = 0x00000f00; //blue
-        }  
-        alter = false;
-    }else{
-        alter = true;
-        for(int i = 0; i < STR_LEN; i++){
-            if(i%2==0){
-                pSharedPru0->neopixelColor[i] = 0x0f000000;//green?
-            }else{
-             pSharedPru0->neopixelColor[i] = 0x000f0000; //red
-            }
-            
-        }  
-        
-    }
-    }
-    pSharedPru0->colorReady=true;
-
-        sleepForMs(500);
-    }
+    pruApp();
 
     //cleanup
     printf("Terminating\n");

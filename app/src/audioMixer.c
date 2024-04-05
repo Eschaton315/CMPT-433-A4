@@ -7,7 +7,7 @@
 
 #include "periodTimer.h"
 #include "hal/wavePlayer.h"
-#include "hal/joyStick.h" 
+
 #include "hal/sharedUtil.h"
 
 #define BASS "wave-files/100051__menegass__gui-drum-bd-hard.wav"
