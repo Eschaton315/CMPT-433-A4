@@ -86,9 +86,15 @@ void main(void){
             pSharedMemStruct->colorReady = false;
             setLED();
 
-        }
-        
-        
+        } 
     }
+
+    //shut down led set
+    
+        for(int i = 0; i < STR_LEN; i++){
+            pSharedMemStruct->neopixelColor[i] = 0x00000000; //clear
+        }
+            pSharedMemStruct->colorReady = false;
+            setLED();
 
 }

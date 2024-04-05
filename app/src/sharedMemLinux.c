@@ -62,14 +62,14 @@ void sharedMem_init(){
         if(alter){
 
         for(int i = 0; i < STR_LEN; i++){
-            pSharedPru0->neopixelColor[i] = 0x0f000000; //blue
+            pSharedPru0->neopixelColor[i] = 0x00000f00; //blue
         }  
         alter = false;
     }else{
         alter = true;
         for(int i = 0; i < STR_LEN; i++){
             if(i%2==0){
-                pSharedPru0->neopixelColor[i] = 0x00000f00;//green?
+                pSharedPru0->neopixelColor[i] = 0x0f000000;//green?
             }else{
              pSharedPru0->neopixelColor[i] = 0x000f0000; //red
             }
@@ -85,10 +85,7 @@ void sharedMem_init(){
 
     //cleanup
     printf("Terminating\n");
-        for(int i = 0; i < STR_LEN; i++){
-            pSharedPru0->neopixelColor[i] = 0x00000000; //clear
-        }
-    pSharedPru0->colorReady=true;  
+
     sleepForMs(1000);
     freePruMmapAddr(pPruBase);
     return;

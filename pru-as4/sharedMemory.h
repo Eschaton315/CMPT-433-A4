@@ -13,6 +13,7 @@ typedef struct {
     bool joystickDownPressed; //fire button
     bool terminate; //check to end program
     bool colorReady;
+    char _pad;
     uint32_t neopixelColor[STR_LEN]; // ledcolor
 } sharedMemStruct_t;
 
