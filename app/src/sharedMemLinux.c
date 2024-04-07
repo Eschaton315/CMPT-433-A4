@@ -45,276 +45,172 @@ void freePruMmapAddr(volatile void* pPruBase)
 static void pruApp(){
     bool newDotGenerated = false;
     bool joystickHold = false;
-    //int side = 0;
     int xTarget = 0;
     int yTarget = 0;
     int xRaw,yRaw,zRaw;
     int yOffset=0;
     u_int32_t colorBright;
     u_int32_t colorDim;
-   // float x, y;
-    accelerometer_init();
-    //int colorDim;
-    //int colorBright;
 
+
+    accelerometer_init();
+
+    //main loop until joystick prompts a terminate
     while(!pSharedPru0->terminate){
 
         accelerometer_getValues(&xRaw,&yRaw,&zRaw);
 
+        //If there is no active dot, generate a new one 
         if(!newDotGenerated&&!joystickHold){
             int dotRange = 5 - (-5)+1;
             srand(time(NULL));
             xTarget = (rand() % dotRange) + (-5);
             yTarget = (rand() % dotRange) + (-5);
-           //set new Dot
            newDotGenerated = true;
-        }
-        
-      // printf("X: %d, Y: %d\n", xRaw, yRaw);
-
-        if(pSharedPru0->joystickDownPressed){
-            if(!joystickHold){
-                joystickHold = true;
-                //printf("FIRE!\n");
-            if(xTarget == xRaw && yTarget == yRaw){
-                printf("HIT!\n");
-                newDotGenerated = false;
-            }else{
-                printf("MISS\n");
-            }                
-            //implement hit effect or effect
-                for(int i = 0; i < STR_LEN; i++){
-                    pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
-                }
-            }
- 
-
-        
-    
         }else{
-            joystickHold = false;
-            
-            //set color depending on x value;
-            if(xRaw>xTarget){
-                //need to tilt more left
-                colorDim = LED_RED;
-                colorBright = LED_RED_BRIGHT;
-            }else if(xRaw<xTarget){
-                //need ro tilt more right
-                colorDim = LED_GREEN;
-                colorBright = LED_GREEN_BRIGHT;
+        // printf("X: %d, Y: %d\n", xRaw, yRaw);
+            if(pSharedPru0->joystickDownPressed){
+                if(!joystickHold){
+                    joystickHold = true;
+                    //printf("FIRE!\n");
+                if(xTarget == xRaw && yTarget == yRaw){
+                    printf("HIT!\n");
+                    newDotGenerated = false;
+                    //playHitSound();
+                }else{
+                    printf("MISS\n");
+                    //playmissSound();
+                }                
+                //implement hit effect or effect
+                    for(int i = 0; i < STR_LEN; i++){
+                        pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
+                    }
+                }
+
             }else{
-                //correct postition
-                colorDim = LED_BLUE;
-                colorBright = LED_BLUE_BRIGHT;
-            }
 
-            //set postion depending on y value;
+                //if fire button is not pressed, display color on led via pru 
+                joystickHold = false;
+                
+                //set color depending on x value;
+                if(xRaw>xTarget){
+                    //need to tilt more left
+                    colorDim = LED_RED;
+                    colorBright = LED_RED_BRIGHT;
+                }else if(xRaw<xTarget){
+                    //need ro tilt more right
+                    colorDim = LED_GREEN;
+                    colorBright = LED_GREEN_BRIGHT;
+                }else{
+                    //correct postition
+                    colorDim = LED_BLUE;
+                    colorBright = LED_BLUE_BRIGHT;
+                }
 
-            if(yTarget>0){
-                yOffset = yTarget - yRaw;  //if y is 5 and raw is 7 tilt down by 2
-            }else{
-                yOffset = yRaw - yTarget;
-            }
-              //if y is -5 and raw is 7 tilt down by 12
-            printf("yRaw = %d,yTarget = %d, yOffset = %d\n",yRaw,yTarget,yOffset);
-            printf("xRaw = %d,xTarget = %d\n",xRaw,xTarget);
-            switch (yOffset)
-            {
-            case -4:
-                for(int i = 7; i > 1; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[1] = colorDim;
-                pSharedPru0->neopixelColor[0] = colorBright;                
-                break;
-            case -3:
-                for(int i = 7; i > 2; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[2] = colorDim;
-                pSharedPru0->neopixelColor[1] = colorBright;
-                pSharedPru0->neopixelColor[0] = colorDim;
-                break;
-            case -2:
-                for(int i = 7; i > 3; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[3] = colorDim;
-                pSharedPru0->neopixelColor[2] = colorBright;
-                pSharedPru0->neopixelColor[1] = colorDim;
-                pSharedPru0->neopixelColor[0] = LED_OFF;                /* code */
-                break;
-            case -1:
-                for(int i = 7; i > 4; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[4] = colorDim;
-                pSharedPru0->neopixelColor[3] = colorBright;
-                pSharedPru0->neopixelColor[2] = colorDim;
-                for(int i = 0; i < 2; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
+                //set postion depending on y value;
+                //create offset value to use for a switch case
+                if(yTarget>0){
+                    yOffset = yTarget - yRaw;  
+                }else{
+                    yOffset = yRaw - yTarget;
                 }
-                break;
-            case 0:
-                for(int i = 0; i < 8; i++){
-                    pSharedPru0->neopixelColor[i] = colorBright;
-                } 
-                break;
-            case 1:
-                pSharedPru0->neopixelColor[7] = LED_OFF;
-                pSharedPru0->neopixelColor[6] = colorDim;
-                pSharedPru0->neopixelColor[5] = colorBright;
-                pSharedPru0->neopixelColor[4] = colorDim;
-                for(int i = 0; i < 4; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                break;
-            case 2:
-                pSharedPru0->neopixelColor[7] = colorDim;
-                pSharedPru0->neopixelColor[6] = colorBright;
-                pSharedPru0->neopixelColor[5] = colorDim;
-                for(int i = 0; i < 5; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                break;
-            case 3:
-                pSharedPru0->neopixelColor[7] = colorBright;
-                pSharedPru0->neopixelColor[6] = colorDim;
-                for(int i = 0; i < 6; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                break;
-            case 4:
-                pSharedPru0->neopixelColor[7] = colorDim;
-                for(int i = 0; i < 7; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                break;            
-            default:
-                if(yOffset<0){
 
-                    for(int i = 7; i > 0; i--){
+                //printf("yRaw = %d,yTarget = %d, yOffset = %d\n",yRaw,yTarget,yOffset);
+                //printf("xRaw = %d,xTarget = %d\n",xRaw,xTarget);
+                
+                //depending on offset, show different led color and position
+                switch (yOffset)
+                {
+                case -4:
+                    for(int i = 7; i > 1; i--){
                         pSharedPru0->neopixelColor[i] = LED_OFF;
                     }            
+                    pSharedPru0->neopixelColor[1] = colorDim;
+                    pSharedPru0->neopixelColor[0] = colorBright;                
+                    break;
+                case -3:
+                    for(int i = 7; i > 2; i--){
+                        pSharedPru0->neopixelColor[i] = LED_OFF;
+                    }            
+                    pSharedPru0->neopixelColor[2] = colorDim;
+                    pSharedPru0->neopixelColor[1] = colorBright;
                     pSharedPru0->neopixelColor[0] = colorDim;
-                }else{
+                    break;
+                case -2:
+                    for(int i = 7; i > 3; i--){
+                        pSharedPru0->neopixelColor[i] = LED_OFF;
+                    }            
+                    pSharedPru0->neopixelColor[3] = colorDim;
+                    pSharedPru0->neopixelColor[2] = colorBright;
+                    pSharedPru0->neopixelColor[1] = colorDim;
+                    pSharedPru0->neopixelColor[0] = LED_OFF;                /* code */
+                    break;
+                case -1:
+                    for(int i = 7; i > 4; i--){
+                        pSharedPru0->neopixelColor[i] = LED_OFF;
+                    }            
+                    pSharedPru0->neopixelColor[4] = colorDim;
+                    pSharedPru0->neopixelColor[3] = colorBright;
+                    pSharedPru0->neopixelColor[2] = colorDim;
+                    for(int i = 0; i < 2; i++){
+                        pSharedPru0->neopixelColor[i] = LED_OFF;
+                    }
+                    break;
+                case 0:
+                    for(int i = 0; i < 8; i++){
+                        pSharedPru0->neopixelColor[i] = colorBright;
+                    } 
+                    break;
+                case 1:
+                    pSharedPru0->neopixelColor[7] = LED_OFF;
+                    pSharedPru0->neopixelColor[6] = colorDim;
+                    pSharedPru0->neopixelColor[5] = colorBright;
+                    pSharedPru0->neopixelColor[4] = colorDim;
+                    for(int i = 0; i < 4; i++){
+                        pSharedPru0->neopixelColor[i] = LED_OFF;
+                    }
+                    break;
+                case 2:
+                    pSharedPru0->neopixelColor[7] = colorDim;
+                    pSharedPru0->neopixelColor[6] = colorBright;
+                    pSharedPru0->neopixelColor[5] = colorDim;
+                    for(int i = 0; i < 5; i++){
+                        pSharedPru0->neopixelColor[i] = LED_OFF;
+                    }
+                    break;
+                case 3:
+                    pSharedPru0->neopixelColor[7] = colorBright;
+                    pSharedPru0->neopixelColor[6] = colorDim;
+                    for(int i = 0; i < 6; i++){
+                        pSharedPru0->neopixelColor[i] = LED_OFF;
+                    }
+                    break;
+                case 4:
                     pSharedPru0->neopixelColor[7] = colorDim;
                     for(int i = 0; i < 7; i++){
                         pSharedPru0->neopixelColor[i] = LED_OFF;
                     }
+                    break;            
+                default:
+                //if off my  a significant amount, at least display the info for x axis
+                    if(yOffset<0){
+                        for(int i = 7; i > 0; i--){
+                            pSharedPru0->neopixelColor[i] = LED_OFF;
+                        }            
+                        pSharedPru0->neopixelColor[0] = colorDim;
+                    }else{
+                        pSharedPru0->neopixelColor[7] = colorDim;
+                        for(int i = 0; i < 7; i++){
+                            pSharedPru0->neopixelColor[i] = LED_OFF;
+                        }
+                    }
+                    break;
                 }
-                break;
             }
 
-
-
-
-
-
-
-            //temp program to check that the neopixel works
-            /*
-            switch (side)
-            {
-            case 0:
-                pSharedPru0->neopixelColor[7] = 0x00000f00;
-                for(int i = 0; i < 7; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                side ++;                 
-                break;
-            
-            case 1:
-                pSharedPru0->neopixelColor[7] = 0x000f0000;
-                pSharedPru0->neopixelColor[6] = 0x00000f00;
-                for(int i = 0; i < 6; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                side ++; 
-                break;
-            case 2:
-                pSharedPru0->neopixelColor[7] = 0x00000f00;
-                pSharedPru0->neopixelColor[6] = 0x000f0000;
-                pSharedPru0->neopixelColor[5] = 0x00000f00;
-                for(int i = 0; i < 5; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                side ++; 
-                break;
-            case 3:
-                pSharedPru0->neopixelColor[7] = 0x00000000;
-                pSharedPru0->neopixelColor[6] = 0x00000f00;
-                pSharedPru0->neopixelColor[5] = 0x000f0000;
-                pSharedPru0->neopixelColor[4] = 0x00000f00;
-                for(int i = 0; i < 4; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                side ++;
-                break;
-            case 4:
-                for(int i = 7; i > 5; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[5] = 0x00000f00;
-                pSharedPru0->neopixelColor[4] = 0x000f0000;
-                pSharedPru0->neopixelColor[3] = 0x00000f00;
-                for(int i = 0; i < 3; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                side ++; 
-                break;
-            case 5:
-                for(int i = 7; i > 4; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[4] = 0x00000f00;
-                pSharedPru0->neopixelColor[3] = 0x000f0000;
-                pSharedPru0->neopixelColor[2] = 0x00000f00;
-                for(int i = 0; i < 2; i++){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }
-                side ++; 
-                break;
-            case 6:
-                for(int i = 7; i > 3; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[3] = 0x00000f00;
-                pSharedPru0->neopixelColor[2] = 0x000f0000;
-                pSharedPru0->neopixelColor[1] = 0x00000f00;
-                pSharedPru0->neopixelColor[0] = LED_OFF;
-                side ++;   
-                break;
-            case 7:
-                for(int i = 7; i > 2; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[2] = 0x00000f00;
-                pSharedPru0->neopixelColor[1] = 0x000f0000;
-                pSharedPru0->neopixelColor[0] = 0x00000f00;
-                side ++; 
-                break;
-            case 8:
-                for(int i = 7; i > 1; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[1] = 0x00000f00;
-                pSharedPru0->neopixelColor[0] = 0x000f0000;
-                side ++; 
-                break;
-            case 9:
-                for(int i = 7; i > 0; i--){
-                    pSharedPru0->neopixelColor[i] = LED_OFF;
-                }            
-                pSharedPru0->neopixelColor[0] = 0x00000f00;
-                side = 0;
-                break;            
-            
-            }
-            */
         }
         pSharedPru0->colorReady=true;
+        //update every 100 ms
         sleepForMs(100);
     }
 
