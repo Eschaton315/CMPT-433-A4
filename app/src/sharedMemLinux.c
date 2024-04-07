@@ -60,7 +60,7 @@ static void pruApp(){
            newDotGenerated = true;
         }
         
-       printf("X: %d, Y: %d, Z: %d\n", x, y, z);
+       //printf("X: %d, Y: %d, Z: %d\n", x, y, z);
 
         if(pSharedPru0->joystickDownPressed){
             if(!joystickHold){
@@ -178,7 +178,7 @@ static void pruApp(){
             }
         }
         pSharedPru0->colorReady=true;
-        sleepForMs(500);
+        sleepForMs(200);
     }
 
 
