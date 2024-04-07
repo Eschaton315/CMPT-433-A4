@@ -11,7 +11,7 @@
 
 bool stopListen = false;
 int file;
-int16_t accelValue[3] = {0,0,0};
+int accelValue[3] = {0,0,0};
 pthread_t accelerometerThread;
 
 static pthread_mutex_t accelerometerMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -87,6 +87,24 @@ void readAccelerometer() {
 
    u_int8_t data[7];
    data [0] = STATUS_ADDRESS;
+   u_int8_t addr = 0x28;
+   u_int8_t buffer[6];
+
+   for(int i =0 ; i<6; i++){
+       if (write(file, &addr, 1) != 1) {
+        printf("Error writing to accelerometer\n");
+        return;
+        }
+
+        if (read(file, data, 1) != 1) {
+        printf("Error reading from accelerometer\n");
+        return;
+        }
+
+        buffer[i] = data[0];
+        addr++; 
+
+   }
 
     // Write the register address to initiate reading
     if (write(file, data, 1) != 1) {
@@ -99,24 +117,26 @@ void readAccelerometer() {
     if (read(file, data, sizeof(data)) != sizeof(data)) {
         printf("Error reading from accelerometer\n");
         return;
-    }
+    } 
 
     // Combine the low and high bytes for each axis
-    int16_t x = ((data[2] << 8) | data[1]);
-    int16_t y = ((data[4] << 8) | data[3]);
-    int16_t z = ((data[6] << 8) | data[5]);
+    int16_t x = ((buffer[1] << 8) | buffer[0]);
+    int16_t y = ((buffer[3] << 8) | buffer[2]);
+    int16_t z = ((buffer[5] << 8) | buffer[4]);
     lock();
-    accelValue[0] = x;
-    accelValue[1] = y;
-    accelValue[2] = z;
+    accelValue[0] = x/1000;
+    accelValue[1] = y/1000;
+    accelValue[2] = z/1000;
     unlock();
 
-    printf("X: %d, Y: %d, Z: %d\n", x, y, z);
+    //printf("X: %d, Y: %d, Z: %d\n", x, y, z);
 
-    for(int i =0;i<7;i++){
-        printf("data %d = 0x%02X, ", i+1, data[i]);
+    /*
+    for(int i =0;i<6;i++){
+        printf("data %d = 0x%02X, ", i+1, buffer[i]);
     }
     printf("\n\n");
+    */
 
    
 }

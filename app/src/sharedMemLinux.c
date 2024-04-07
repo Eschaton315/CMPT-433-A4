@@ -46,21 +46,24 @@ static void pruApp(){
     bool newDotGenerated = false;
     bool joystickHold = false;
     int side = 0;
-    int x,y,z;
+    int xRaw,yRaw,zRaw;
+   // float x, y;
     accelerometer_init();
     //int colorDim;
     //int colorBright;
 
     while(!pSharedPru0->terminate){
 
-        accelerometer_getValues(&x,&y,&z);
+        accelerometer_getValues(&xRaw,&yRaw,&zRaw);
+
+
 
         if(!newDotGenerated){
            //set new Dot
            newDotGenerated = true;
         }
         
-       //printf("X: %d, Y: %d, Z: %d\n", x, y, z);
+       printf("X: %d, Y: %d\n", xRaw, yRaw);
 
         if(pSharedPru0->joystickDownPressed){
             if(!joystickHold){
