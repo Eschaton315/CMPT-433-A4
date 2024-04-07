@@ -22,7 +22,8 @@ void accelerometer_cleanup();
 //Gets current value of the accelerometer
 void accelerometer_getValues(int *x, int *y, int *z);
 
-
+//Convert accelerometer value to scaled values (-17,17) to (-10,10)
+int accelerometer_value_convert();
 
 
 

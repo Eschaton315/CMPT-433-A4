@@ -7,6 +7,8 @@
 #define ACCEL_ADDRESS 0x18       // Address of the LIS331DLH accelerometer
 #define STATUS_ADDRESS 0x27
 #define CTRL_REG1_ADDRESS 0x20
+#define MAX_ACCEL 17
+#define MAX_CONVERTED 10
 //#define ACCEL_ADDR_GREEN 0x1C
 
 bool stopListen = false;
@@ -127,6 +129,9 @@ void readAccelerometer() {
     accelValue[0] = x/1000;
     accelValue[1] = y/1000;
     accelValue[2] = z/1000;
+	accelValue[0] = accelerometer_value_convert(accelValue[0]);
+	accelValue[1] = accelerometer_value_convert(accelValue[1]);
+	accelValue[2] = accelerometer_value_convert(accelValue[2]);
     unlock();
 
     //printf("X: %d, Y: %d, Z: %d\n", x, y, z);
@@ -156,6 +161,13 @@ void accelerometer_cleanup(){
     return;
 }
 
+
+int accelerometer_value_convert(int value){
+    float newValue = (float)value * MAX_CONVERTED / MAX_ACCEL;    
+    value = (int)newValue;
+    return value;
+	
+}
 
 void accelerometer_getValues(int* x, int* y, int* z){
     lock();
