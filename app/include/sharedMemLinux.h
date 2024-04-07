@@ -10,6 +10,7 @@
 
 #include "sharedMemory.h"
 #include "hal/sharedUtil.h"
+#include "hal/accelerometer.h"
 
 #define PRU_ADDR      0x4A300000   // Start of PRU memory Page 184 am335x TRM
 #define PRU_LEN       0x80000      // Length of PRU memory

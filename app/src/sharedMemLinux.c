@@ -1,6 +1,13 @@
 
 #include "sharedMemLinux.h"
 
+#define LED_OFF 0x00000000
+#define LED_RED 0x000f0000
+#define LED_GREEN 0x0f000000
+#define LED_BLUE 0x00000f00
+#define LED_RED_BRIGHT 0x008f0000
+#define LED_GREEN_BRIGHT 0x8f000000
+#define LED_BLUE_BRIGHT 0x00008f00
 
 
 //General PRU Memory Sharing Routine from examplecode from course page
@@ -38,16 +45,22 @@ void freePruMmapAddr(volatile void* pPruBase)
 static void pruApp(){
     bool newDotGenerated = false;
     bool joystickHold = false;
-    int alter = 0;
+    int side = 0;
+    int x,y,z;
+    accelerometer_init();
+    //int colorDim;
+    //int colorBright;
 
     while(!pSharedPru0->terminate){
+
+        accelerometer_getValues(&x,&y,&z);
 
         if(!newDotGenerated){
            //set new Dot
            newDotGenerated = true;
         }
         
-       
+       printf("X: %d, Y: %d, Z: %d\n", x, y, z);
 
         if(pSharedPru0->joystickDownPressed){
             if(!joystickHold){
@@ -66,32 +79,32 @@ static void pruApp(){
             joystickHold = false;
             //temp program to check that the neopixel works
 
-            switch (alter)
+            switch (side)
             {
             case 0:
                 pSharedPru0->neopixelColor[7] = 0x00000f00;
                 for(int i = 0; i < 7; i++){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }
-                alter ++;                 
+                side ++;                 
                 break;
             
             case 1:
                 pSharedPru0->neopixelColor[7] = 0x000f0000;
                 pSharedPru0->neopixelColor[6] = 0x00000f00;
                 for(int i = 0; i < 6; i++){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }
-                alter ++; 
+                side ++; 
                 break;
             case 2:
                 pSharedPru0->neopixelColor[7] = 0x00000f00;
                 pSharedPru0->neopixelColor[6] = 0x000f0000;
                 pSharedPru0->neopixelColor[5] = 0x00000f00;
                 for(int i = 0; i < 5; i++){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }
-                alter ++; 
+                side ++; 
                 break;
             case 3:
                 pSharedPru0->neopixelColor[7] = 0x00000000;
@@ -99,73 +112,73 @@ static void pruApp(){
                 pSharedPru0->neopixelColor[5] = 0x000f0000;
                 pSharedPru0->neopixelColor[4] = 0x00000f00;
                 for(int i = 0; i < 4; i++){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }
-                alter ++;
+                side ++;
                 break;
             case 4:
                 for(int i = 7; i > 5; i--){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }            
                 pSharedPru0->neopixelColor[5] = 0x00000f00;
                 pSharedPru0->neopixelColor[4] = 0x000f0000;
                 pSharedPru0->neopixelColor[3] = 0x00000f00;
                 for(int i = 0; i < 3; i++){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }
-                alter ++; 
+                side ++; 
                 break;
             case 5:
                 for(int i = 7; i > 4; i--){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }            
                 pSharedPru0->neopixelColor[4] = 0x00000f00;
                 pSharedPru0->neopixelColor[3] = 0x000f0000;
                 pSharedPru0->neopixelColor[2] = 0x00000f00;
                 for(int i = 0; i < 2; i++){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }
-                alter ++; 
+                side ++; 
                 break;
             case 6:
                 for(int i = 7; i > 3; i--){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }            
                 pSharedPru0->neopixelColor[3] = 0x00000f00;
                 pSharedPru0->neopixelColor[2] = 0x000f0000;
                 pSharedPru0->neopixelColor[1] = 0x00000f00;
-                pSharedPru0->neopixelColor[0] = 0x00000000;
-                alter ++;   
+                pSharedPru0->neopixelColor[0] = LED_OFF;
+                side ++;   
                 break;
             case 7:
                 for(int i = 7; i > 2; i--){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }            
                 pSharedPru0->neopixelColor[2] = 0x00000f00;
                 pSharedPru0->neopixelColor[1] = 0x000f0000;
                 pSharedPru0->neopixelColor[0] = 0x00000f00;
-                alter ++; 
+                side ++; 
                 break;
             case 8:
                 for(int i = 7; i > 1; i--){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }            
                 pSharedPru0->neopixelColor[1] = 0x00000f00;
                 pSharedPru0->neopixelColor[0] = 0x000f0000;
-                alter ++; 
+                side ++; 
                 break;
             case 9:
                 for(int i = 7; i > 0; i--){
-                    pSharedPru0->neopixelColor[i] = 0x00000000;
+                    pSharedPru0->neopixelColor[i] = LED_OFF;
                 }            
                 pSharedPru0->neopixelColor[0] = 0x00000f00;
-                alter = 0;
+                side = 0;
                 break;            
             
             }
         }
         pSharedPru0->colorReady=true;
-        sleepForMs(200);
+        sleepForMs(500);
     }
 
 
