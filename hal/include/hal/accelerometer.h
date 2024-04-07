@@ -5,8 +5,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
