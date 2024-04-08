@@ -45,6 +45,7 @@ void freePruMmapAddr(volatile void* pPruBase)
 static void pruApp(){
     bool newDotGenerated = false;
     bool joystickHold = false;
+    int score = 0;
     int xTarget = 0;
     int yTarget = 0;
     int xRaw,yRaw,zRaw;
@@ -76,6 +77,12 @@ static void pruApp(){
                 if(xTarget == xRaw && yTarget == yRaw){
                     printf("HIT!\n");
                     newDotGenerated = false;
+                    if(score<99){
+                        score++;
+                    }else{
+                        score = 0;
+                    }
+                    //update14seg(score);
                     //playHitSound();
                 }else{
                     printf("MISS\n");
@@ -86,6 +93,7 @@ static void pruApp(){
                         pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
                     }
                 }
+                //if miss keep replaying miss noise
 
             }else{
 
