@@ -64,3 +64,13 @@ void EchoToFile(char* filePath, char* contents){
 	return;
 }
 
+void writeToFile(char* fileName, char* value) {
+    FILE* pfile = fopen(fileName, "w");
+    if (pfile == NULL) {
+        printf("ERROR: Unable to open export file.\n");
+        exit(1);
+    }
+    fprintf(pfile, "%s", value);
+    // Write to data to the file using fprintf():
+    fclose(pfile);
+}

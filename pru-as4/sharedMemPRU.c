@@ -5,6 +5,7 @@
 #include "resource_table_empty.h"
 
 
+
 // GPIO Configuration
 // ----------------------------------------------------------
 volatile register uint32_t __R30;   // output GPIO register
@@ -35,6 +36,8 @@ volatile register uint32_t __R31;   // input GPIO register
 #define THIS_PRU_DRAM_USABLE (THIS_PRU_DRAM + OFFSET)
 
 volatile sharedMemStruct_t *pSharedMemStruct = (volatile void *)THIS_PRU_DRAM_USABLE;
+
+
 
 static void setLED(){
     __delay_cycles(resetCycles);

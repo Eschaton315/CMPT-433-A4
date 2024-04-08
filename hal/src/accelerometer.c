@@ -29,7 +29,7 @@ static void unlock(){
 static void *accelerometerListener();
 
 void accelerometer_init(){
-    printf("initializing acc\n");
+    printf("initializing accelerometer\n");
     runCommand("config-pin p9.17 i2c");
     runCommand("config-pin p9.18 i2c");
 

@@ -14,4 +14,5 @@ void runCommand(char *command);
 long long getTimeInMs(void);
 void sleepForMs(long long delayInMs);
 void EchoToFile(char* filePath, char* contents);
+void writeToFile(char* fileName, char* value);
 #endif

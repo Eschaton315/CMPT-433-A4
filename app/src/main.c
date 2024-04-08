@@ -3,7 +3,13 @@
 #include <stdbool.h>
 #include <pthread.h>
 
+
+
 #include "sharedMemLinux.h"
+#include "hal/sharedUtil.h"
+#include "hal/segDisplay.h"
+#include "hal/pwm.h"
+#include "terminate.h"
 
 /*
  Zen Cape's LEDS header:
@@ -12,9 +18,15 @@
                 Pin 3: Unused (it's "5V external power", which is not powered normally on the BBG)
         - Connect NeoPixel "5VDC" to P9.7 or P9.8
 */
-int main(){
 
-    sharedMem_init();
-    
+
+
+int main(){
+	configBuzzer();
+	InitializeI2C();
+	sharedMem_init();
+	//printf("cleanup14seg\n");
+	CleanI2C();
+	
     return 0;
 }

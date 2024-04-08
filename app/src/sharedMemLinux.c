@@ -1,6 +1,7 @@
 
 #include "sharedMemLinux.h"
 
+
 #define LED_OFF 0x00000000
 #define LED_RED 0x000f0000
 #define LED_GREEN 0x0f000000
@@ -8,7 +9,8 @@
 #define LED_RED_BRIGHT 0x008f0000
 #define LED_GREEN_BRIGHT 0x8f000000
 #define LED_BLUE_BRIGHT 0x00008f00
-
+#define LED_YELLOW 0x0f0f0000
+#define LED_PURPLE 0x000f0f00
 
 //General PRU Memory Sharing Routine from examplecode from course page
 
@@ -45,6 +47,8 @@ void freePruMmapAddr(volatile void* pPruBase)
 static void pruApp(){
     bool newDotGenerated = false;
     bool joystickHold = false;
+    bool missHold = false;
+    int missTimer = 0;
     int score = 0;
     int xTarget = 0;
     int yTarget = 0;
@@ -52,13 +56,18 @@ static void pruApp(){
     int yOffset=0;
     u_int32_t colorBright;
     u_int32_t colorDim;
-
+    u_int32_t colorFire;
 
     accelerometer_init();
-
+    WriteNewNumberI2C(score);
     //main loop until joystick prompts a terminate
     while(!pSharedPru0->terminate){
-
+        if(missTimer<5){
+            missTimer++;
+        }else{
+            missTimer = 0;
+        }
+        
         accelerometer_getValues(&xRaw,&yRaw,&zRaw);
 
         //If there is no active dot, generate a new one 
@@ -72,33 +81,44 @@ static void pruApp(){
         // printf("X: %d, Y: %d\n", xRaw, yRaw);
             if(pSharedPru0->joystickDownPressed){
                 if(!joystickHold){
-                    joystickHold = true;
-                    //printf("FIRE!\n");
-                if(xTarget == xRaw && yTarget == yRaw){
-                    printf("HIT!\n");
-                    newDotGenerated = false;
-                    if(score<99){
-                        score++;
+                        joystickHold = true;
+                        //printf("FIRE!\n");
+                    if(xTarget == xRaw && yTarget == yRaw){
+                        printf("HIT!\n");
+                        colorFire = LED_YELLOW;
+                        BuzzerHitThreadCreate();
+                        newDotGenerated = false;
+                        if(score<99){
+                            score++;
+                        }else{
+                            score = 0;
+                        }
+                        WriteNewNumberI2C(score);
+                        //update14seg(score);
+                        //playHitSound();
                     }else{
-                        score = 0;
-                    }
-                    //update14seg(score);
-                    //playHitSound();
-                }else{
-                    printf("MISS\n");
-                    //playmissSound();
-                }                
-                //implement hit effect or effect
-                    for(int i = 0; i < STR_LEN; i++){
-                        pSharedPru0->neopixelColor[i] = 0x000f0f00; // purp
-                    }
+                        printf("MISS\n");
+                        colorFire = LED_PURPLE;
+                        //BuzzerMissThreadCreate();
+                        missTimer = 0;
+                        missHold = true;
+                        //playmissSound();
+                    }                
+                    //implement hit effect or effect
                 }
                 //if miss keep replaying miss noise
+                for(int i = 0; i < STR_LEN; i++){
+                    pSharedPru0->neopixelColor[i] = colorFire;
+                }                
+                if(missHold&&missTimer == 0){
+                    BuzzerMissThreadCreate();
+                }
 
             }else{
 
                 //if fire button is not pressed, display color on led via pru 
                 joystickHold = false;
+                missHold = false;
                 
                 //set color depending on x value;
                 if(xRaw>xTarget){
@@ -238,10 +258,13 @@ void sharedMem_init(){
     runCommand("config-pin p8_15 pruin");
     runCommand("config-pin p8.16 pruin");
 
+    printf("==>GAME START<==\n");
     pruApp();
 
     //cleanup
     printf("Terminating\n");
+    BuzzerHitThreadJoin();
+    BuzzerMissThreadJoin();
     freePruMmapAddr(pPruBase);
     return;
 }
