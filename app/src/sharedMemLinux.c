@@ -93,6 +93,8 @@ static void pruApp(){
                         }else{
                             score = 0;
                         }
+
+                        //set digit 
                         WriteNewNumberI2C(score);
                         //update14seg(score);
                         //playHitSound();

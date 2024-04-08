@@ -133,59 +133,59 @@ void InitializeI2C(){
 }
 
 void WriteNewNumberI2C(int value){
-	writeToFile(GPIO1, "0");
+
     writeToFile(GPIO2, "0");
 	writeToFile(GPIO2, "1");
 	switch (value){
 		case 0:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM0_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM0_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM0_PT2);
 			break;
 		
 		case 1:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM1_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM1_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM1_PT2);
 			break;
 			
 		case 2:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM2_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM2_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM2_PT2);
 			break;
 			
 		case 3:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM3_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM3_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM3_PT2);
 			break;
 			
 		case 4:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM4_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM4_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM4_PT2);
 			break;
 			
 		case 5:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM5_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM5_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM5_PT2);
 			break;
 			
 		case 6:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM6_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM6_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM6_PT2);
 			break;
 			
 		case 7:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM7_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM7_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM7_PT2);
 			
 			break;
 			
 		case 8:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM8_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM8_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM8_PT2);
 			break;
 	
 		default:
 			writeI2cReg(i2cFileDesc, REG_OUTA, NUM9_PT1);
-			writeI2cReg(i2cFileDesc, REG_OUTA, NUM9_PT2);
+			writeI2cReg(i2cFileDesc, REG_OUTB, NUM9_PT2);
 			break;
 	}
 	
