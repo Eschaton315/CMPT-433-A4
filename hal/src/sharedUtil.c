@@ -47,3 +47,20 @@ void sleepForMs(long long delayInMs){
     nanosleep(&reqDelay, (struct timespec *) NULL);
 }
 
+
+//echo to file for editing their values
+void EchoToFile(char* filePath, char* contents){
+	// Open direction file
+	int file = open(filePath, O_WRONLY);
+	if (file < 0) {
+		printf("Failed to read file %s", filePath);
+		return;
+	}
+
+	write(file, contents, strlen(contents));
+	// Close
+	close(file);
+
+	return;
+}
+
